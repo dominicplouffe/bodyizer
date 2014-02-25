@@ -1,0 +1,30 @@
+  {
+    "manifest_version": 2,
+    "name": "bodyizer",
+    "version": "0.0.1",
+    "author": "http://www.dplouffe.ca",
+
+    "description": "Tool to get the content of the HTML",
+    "icons": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    },
+
+    "content_security_policy": "script-src 'self'; object-src 'self'",
+
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "permissions": [
+        "storage",
+        "tabs",
+        "<all_urls>"
+    ],
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "run_at": "document_end"
+    }]
+}
