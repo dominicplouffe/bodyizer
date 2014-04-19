@@ -176,7 +176,30 @@ function display_bodyizer_element() {
     create_bodyizer_element(best_element);
     document.onclick = hide_div;
 
+    parse_ngrams();
+
     return false;
+}
+
+function parse_ngrams() {
+    console.log('Parsing Ngrams');
+
+    var el = document.getElementById('bodyizer_div');
+    var text = el.innerText;
+    var mongograms = text.match(/\w+/g);
+
+    monogram_counts = {};
+    for (var i = 0; i < mongograms.length; i++) {
+        monogram = mongograms[i].toLocaleLowerCase();
+
+        if (monogram_counts[monogram] === undefined) {
+            monogram_counts[monogram] = 0;
+        }
+
+        monogram_counts[monogram] += 1;
+    }
+
+    console.log(monogram_counts);
 }
 
 function init() {
