@@ -1,5 +1,3 @@
-
-
 var BAD_TAGS = /editor|comment|rss|pagination|footer|header|popup/i;
 var INVALID_TAGS = /form|img|script|combx|comment|community|disqus|extra|foot|header|menu|remark|rss|shoutbox|sidebar|sponsor|ad-break|agegate|pagination|pager|popup|tweet|twitter/i;
 var VALID_TAGS = ["P", "TD", "PRE"];
@@ -114,83 +112,73 @@ function score_possible_elements(possible_elements) {
         }
     }
 
-    console.log(chosen_element);
-    console.log(is_bad_element(chosen_element));
-
     return chosen_element;
 }
 
-function create_bodyizer_element(best_element) {
 
-    el = document.createElement("DIV");
-
-    if (best_element === null) {
-        el.innerHTML = "bodyizer could not find any suitable element to showcase!";
-    } else {
-        el.innerHTML = best_element.innerHTML;
-    }
-    el.id = "bodyizer_div";
-
-    document.body.appendChild(el);
-
-    var elw = el.offsetWidth;
-    var ww = window.innerWidth;
-    var div_left = (ww - elw) / 2;
-    el.style.left = div_left + "px";
-    el.style.top = "10px";
-}
-
-function hide_div(e) {
-
-    function is_bodyizer(el) {
-        if (el.id !== undefined) {
-            if (el.id.search('bodyizer_div') !== -1) {
-                return true;
-            }
-        }
-
-        if (el.parentNode === undefined || el.parentNode === null || el.parentNode.tagName === "BODY") {
-            return false;
-        }
-
-        return is_bodyizer(el.parentNode);
-    }
-
-    if (!is_bodyizer(e.toElement)) {
-        document.getElementById('bodyizer_div').style.display = "none";
-    }
-}
-
-function display_bodyizer_element() {
-
-    var el = document.getElementById('bodyizer_div');
-
-    if (el !== null) {
-        el.style.display = "block";
-        return;
-    }
-
+function discovery() {
     nodes_to_validate = get_possible_elements();
     best_element = score_possible_elements(nodes_to_validate);
 
-    create_bodyizer_element(best_element);
-    document.onclick = hide_div;
+    if (best_element === null) {
+        return {
+            body: "bodyizer could not find any suitable element to showcase!",
+            ngrams: {}
+        };
+    } else {
 
-    parse_ngrams();
+        var content = remove_elements(best_element.innerHTML);
 
-    return false;
+        return {
+            body: content,
+            ngrams: parse_ngrams(best_element)
+        };
+    }
 }
 
-function parse_ngrams() {
+function remove_elements(content) {
+    var object = /<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi;
+    var script = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+    var style = /<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi;
+    var fieldset = /<fieldset\b[^<]*(?:(?!<\/fieldset>)<[^<]*)*<\/fieldset>/gi;
+
+    var button = /<button[^>]*>/gi;
+    var input = /<input[^>]*>/gi;
+    var img = /<img[^>]*>/gi;
+
+    content = content.replace(object, "");
+    content = content.replace(script, "");
+    content = content.replace(style, "");
+    content = content.replace(fieldset, "");
+
+    content = content.replace(input, "");
+    content = content.replace(img, "");
+    content = content.replace(button, "");
+
+    return content;
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function parse_ngrams(el) {
     console.log('Parsing Ngrams');
 
-    var el = document.getElementById('bodyizer_div');
     var text = el.innerText;
     var mongograms = text.match(/\w+/g);
 
     monogram_counts = {};
     for (var i = 0; i < mongograms.length; i++) {
         monogram = mongograms[i].toLocaleLowerCase();
+
+        if (isNumber(monogram)) {
+            continue;
+        }
+
+        if (monogram.length <= 2) {
+            continue;
+        }
 
         if (monogram_counts[monogram] === undefined) {
             monogram_counts[monogram] = 0;
@@ -199,26 +187,15 @@ function parse_ngrams() {
         monogram_counts[monogram] += 1;
     }
 
-    console.log(monogram_counts);
+    return monogram_counts;
 }
 
-function init() {
-    var head = document.getElementsByTagName('HEAD')[0];
+function return_value() {
 
-    var style = document.createElement('STYLE');
-    style.innerText = "#bodyizer_div { color: black; border: 5px solid #ccc; font-size: 20px; padding: 10px; line-height: 26px; font-family: Georgia; background-color: #FFF; width: 80%; margin: auto; margin-top: 10px; z-index: 999999; position: absolute }";
-    style.innerText += "#bodyizer_div p { margin-bottom: 20px; color: black; font-size: 20px; padding: 0px; line-height: 26px; font-family: Georgia; }";
-    style.innerText += "#bodyizer_div a { color: red; font-size: 20px; }";
-    style.innerText += "#bodyizer_div_link { position: fixed; bottom: 0; right: 0; padding: 5px; border: 1px solid #ddd; background-color: #eee; font-size: 12px; font-family: Georgia; }";
-    style.innerText += "#bodyizer_div_link a { color: red; font-size: 12px; font-family: Georgia; }";
-    head.appendChild(style);
+    return_object = discovery();
+    return_object.url = document.location.href;
 
-    var show_div = document.createElement('DIV');
-    show_div.id = "bodyizer_div_link";
-    show_div.innerHTML = "<a href='#' id='bodyizer_div_link_anchor'>..: Show Bodyizer :..</a>";
-
-    document.body.appendChild(show_div);
-    document.getElementById('bodyizer_div_link_anchor').onclick = display_bodyizer_element;
+    return return_object;
 }
 
-init();
+chrome.runtime.sendMessage(return_value(), function(response) {});
