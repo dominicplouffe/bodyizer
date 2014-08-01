@@ -12,13 +12,17 @@ function get_page_details() {
     var return_value = {
         body: 'Body has not been processed.  Please reload the tab and try again.',
         ngrams: {},
-        url: active_url
+        url: active_url,
+        hostname: null,
+        title: 'Not Available'
     };
 
     if (active_url !== null && details[active_url] !== undefined) {
         url_details = details[active_url];
         return_value.body = url_details.body;
         return_value.ngrams = url_details.ngrams;
+        return_value.hostname = url_details.hostname;
+        return_value.title = url_details.title;
     }
 
     return return_value;

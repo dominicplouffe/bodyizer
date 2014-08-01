@@ -136,6 +136,16 @@ function discovery() {
     }
 }
 
+function get_title() {
+    var header = document.getElementsByTagName('h1');
+
+    if (header.length === 0) {
+        return document.getElementsByTagName('title')[0].innerText;
+    }
+
+    return header[0].innerText;
+}
+
 function remove_elements(content) {
     var object = /<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi;
     var script = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
@@ -163,14 +173,14 @@ function isNumber(n) {
 }
 
 function parse_ngrams(el) {
-    console.log('Parsing Ngrams');
-
     var text = el.innerText;
     var mongograms = text.match(/\w+/g);
 
-    monogram_counts = {};
+    var monogram_counts = {};
+    var bi_gram = ['', ''];
+
     for (var i = 0; i < mongograms.length; i++) {
-        monogram = mongograms[i].toLocaleLowerCase();
+        var monogram = mongograms[i].toLocaleLowerCase();
 
         if (isNumber(monogram)) {
             continue;
@@ -184,7 +194,17 @@ function parse_ngrams(el) {
             monogram_counts[monogram] = 0;
         }
 
+        bi_gram[0] = bi_gram[1];
+        bi_gram[1] = monogram;
+
+        var bg = bi_gram.join(' ');
+
+        if (monogram_counts[bg] === undefined) {
+            monogram_counts[bg] = 0;
+        }
+
         monogram_counts[monogram] += 1;
+        monogram_counts[bg] += 1;
     }
 
     return monogram_counts;
@@ -194,6 +214,8 @@ function return_value() {
 
     return_object = discovery();
     return_object.url = document.location.href;
+    return_object.hostname = document.location.hostname;
+    return_object.title = get_title();
 
     return return_object;
 }

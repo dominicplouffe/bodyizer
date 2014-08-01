@@ -2,8 +2,9 @@ var BGPage = chrome.extension.getBackgroundPage();
 
 page_details = BGPage.get_page_details();
 
+document.getElementById('h3_title').innerHTML = page_details.title;
 document.getElementById('dv_body_content').innerHTML = page_details.body;
-
+document.getElementById('dv_hostname_content').innerHTML = page_details.hostname;
 
 var ngram_body = '';
 for (var ngram in page_details.ngrams) {
