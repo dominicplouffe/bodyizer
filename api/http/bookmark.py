@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from services import bookmark as bm
+from services import shortner
 from auth import requires_auth
 from status import finish
 
@@ -29,5 +30,29 @@ def set():
 
     return finish(
         {'url': _bookmark['short_url']},
+        200
+    )
+
+@bookmark.route('/get', methods=['GET'])
+@requires_auth
+def get():
+    url = request.args.get('url')
+    token = request.args.get('token')
+
+    short_url = shortner.get_url(url)
+
+    _bookmark = bm.get_bookmart(short_url, token)
+
+    if _bookmark is None:
+        return finish({}, 404, "Bookmark not found.")
+
+    return finish(
+        {
+            'title': _bookmark['title'],
+            'url': _bookmark['url'],
+            'hostname': _bookmark['hostname'],
+            'tags': ','.join(_bookmark['tags']),
+            'short_url': _bookmark['short_url']
+        },
         200
     )

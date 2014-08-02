@@ -44,7 +44,9 @@ def convert_to_base(num):
         num /= BASE
     return _str
 
-def get_url(num):
+def get_url(url):
+    num = abs(hash(url))
+
     return '/%s' % convert_to_base(num)
 
 

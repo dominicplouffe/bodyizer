@@ -32,12 +32,3 @@ def login():
         return finish({'token': token}, 200)
 
     return finish({}, 404, msg='Username or Password were not found.')
-
-@auth.route('/validate', methods=['GET'])
-def validate():
-    token = request.args.get('token', '')
-
-    if token != '1':
-        return finish({}, 401, 'Token is not valid.')
-
-    return finish({}, 200)

@@ -12,15 +12,11 @@ data = {
     'ngrams': JSON.stringify(page_details.ngrams)
 };
 
-$('#sp_title').html(page_details.title);
-$('#sp_url').html(page_details.url);
-$('#sp_hostname').html(page_details.hostname);
-
 chrome.storage.local.get('token', function(obj) {
     if (obj.token === undefined || obj.token === null) {
         $('#login').show();
     } else {
-        validate_login(obj.token);
+        check_bookmark(obj.token, page_details.url);
     }
 });
 
@@ -78,19 +74,34 @@ $('#logout').click(function() {
     return false;
 });
 
-function validate_login(token) {
+function check_bookmark(token, url) {
     $.ajax({
-        url: 'http://localhost:5001/api/v1.0/auth/validate?token=' + token,
+        url: 'http://localhost:5001/api/v1.0/bookmark/get?token=' + token + '&url=' + escape(url),
         type: 'GET',
         success: function(data, textStatus, jqXHR) {
             _token = token;
 
             set_storage_object();
 
+            $('#sp_title').html(data.result.title);
+            $('#sp_url').html(data.result.url);
+            $('#sp_hostname').html(data.result.hostname);
+            $('#tags').val(data.result.tags);
+
             setup_page();
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            logout();
+            console.log(textStatus);
+
+            if (jqXHR.status == 404) {
+                $('#sp_title').html(page_details.title);
+                $('#sp_url').html(page_details.url);
+                $('#sp_hostname').html(page_details.hostname);
+
+                setup_page();
+            } else if (jqXHR.status == 401) {
+                logout();
+            }
         }
     });
 }

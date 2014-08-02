@@ -20,7 +20,7 @@ def insert_bookmark(
     user_id
 ):
 
-    short_url = shortner.get_url(abs(hash(url)))
+    short_url = shortner.get_url(url)
     _id = generate_key(short_url, user_id)
 
     rec = {
@@ -39,3 +39,9 @@ def insert_bookmark(
     db.bookmarks.save(rec)
 
     return rec
+
+def get_bookmart(short_url, user_id):
+
+    _id = generate_key(short_url, user_id)
+
+    return db.bookmarks.find_one({'_id': _id})
