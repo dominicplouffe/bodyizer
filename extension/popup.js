@@ -1,16 +1,41 @@
-var BGPage = chrome.extension.getBackgroundPage();
+$(document).ready(function() {
 
-page_details = BGPage.get_page_details();
+    var BGPage = chrome.extension.getBackgroundPage();
 
-document.getElementById('h3_title').innerHTML = page_details.title;
-document.getElementById('dv_body_content').innerHTML = page_details.body;
-document.getElementById('dv_hostname_content').innerHTML = page_details.hostname;
+    page_details = BGPage.get_page_details();
 
-var ngram_body = '';
-for (var ngram in page_details.ngrams) {
-    ngram_body += '<div style="width: 33%; float: left;">' + ngram + ' (' + page_details.ngrams[ngram] + ') </div>';
-}
+    data = {
+        'title': page_details.title,
+        'url': page_details.url,
+        'hostname': page_details.hostname,
+        'tags': '',
+        'token': '1',
+        'body': page_details.body,
+        'ngrams': JSON.stringify(page_details.ngrams)
+    };
 
-document.getElementById('dv_ngrams_content').innerHTML = ngram_body;
+    $('#sp_title').html(page_details.title);
+    $('#sp_url').html(page_details.url);
+    $('#sp_hostname').html(page_details.hostname);
 
+    $('#new_bookmark').show();
 
+    $('#btn_add_bookmark').click(function() {
+
+        data.tags = $('#tags').val();
+
+        $.ajax({
+            url: 'http://localhost:5001/api/v1.0/bookmark/set',
+            type: 'POST',
+            data: data,
+            success: function(data, textStatus, jqXHR) {
+                $('#new_bookmark').hide();
+                $('#new_bookmark_success').show();
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert(textStatus);
+            }
+        });
+    });
+});
