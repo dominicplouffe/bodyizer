@@ -1,6 +1,6 @@
-bodyizer
+Connexion.me
 ========
 
-Chrome extension to extract the body of a webpage
+Simple bookmarking services that I created while on holidays one year.
 
-testing renaming of repository
+Nothing fancy, just works for me.

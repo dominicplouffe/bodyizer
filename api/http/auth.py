@@ -11,7 +11,11 @@ def requires_auth(f):
         token = request.form.get('token', request.args.get('token', None))
 
         if token is None or token != '1':
-            return finish({}, 401, 'You are missing the user token or it is invalid')
+            return finish(
+                {},
+                401,
+                'You are missing the user token or it is invalid'
+            )
         return f(*args, **kwargs)
     return decorated
 
@@ -29,8 +33,11 @@ def login():
 
     return finish({}, 404, msg='Username or Password were not found.')
 
-# @auth.route('/logout')
-# def logout():
-#     session.pop('_u')
+@auth.route('/validate', methods=['GET'])
+def validate():
+    token = request.args.get('token', '')
 
-    # return redirect('/')
+    if token != '1':
+        return finish({}, 401, 'Token is not valid.')
+
+    return finish({}, 200)
