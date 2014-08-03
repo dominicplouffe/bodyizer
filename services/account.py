@@ -1,11 +1,11 @@
-from config import PASSWORD_HASH
+from config import PASSWORD_HASH, MONGODB_CONN
 from pymongo import MongoClient
 from datetime import datetime
 from bson import ObjectId
 from bson.errors import InvalidId
 import hashlib
 
-db = MongoClient()['connexion']
+db = MongoClient(MONGODB_CONN)['connexion']
 
 def hash_password(password):
 

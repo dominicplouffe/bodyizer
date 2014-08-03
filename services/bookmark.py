@@ -1,9 +1,10 @@
 from mongodbsearch import mongodbsearch
+from config import MONGODB_CONN
 from pymongo import MongoClient
 from datetime import datetime
 import shortner
 
-db = MongoClient()['connexion']
+db = MongoClient(MONGODB_CONN)['connexion']
 
 def generate_key(short_url, user_id):
     return {
