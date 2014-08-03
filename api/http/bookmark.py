@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from services import bookmark as bm
-from services import shortner
+from api.services import bookmark as bm
+from api.services import shortner
 from auth import requires_auth
 from status import finish
 

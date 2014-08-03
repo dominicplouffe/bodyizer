@@ -1,0 +1,3 @@
+[submodule "mongodbsearch"]
+	path = mongodbsearch
+	url = git@github.com:dominicplouffe/mongodbsearch.git

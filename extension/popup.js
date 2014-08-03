@@ -60,7 +60,9 @@ $('#btn_add_bookmark').click(function() {
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
-            alert(textStatus);
+            if (jqXHR.status == 401) {
+                logout();
+            }
         }
     });
 
