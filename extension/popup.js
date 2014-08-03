@@ -34,10 +34,12 @@ $('#btn_sign_in').click(function() {
         success: function(data, textStatus, jqXHR) {
             _token = data.result.token;
 
-            console.log(_token);
-            console.log(data);
-
             set_storage_object();
+
+            $('#sp_title').html(page_details.title);
+            $('#sp_url').html(page_details.url);
+            $('#sp_hostname').html(page_details.hostname);
+
             setup_page();
         },
         error: function (jqXHR, textStatus, errorThrown)
