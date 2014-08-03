@@ -7,7 +7,7 @@ data = {
     'url': page_details.url,
     'hostname': page_details.hostname,
     'tags': '',
-    'token': '1',
+    'token': null,
     'body': page_details.body,
     'ngrams': JSON.stringify(page_details.ngrams)
 };
@@ -16,6 +16,7 @@ chrome.storage.local.get('token', function(obj) {
     if (obj.token === undefined || obj.token === null) {
         $('#login').show();
     } else {
+        _token = obj.token;
         check_bookmark(obj.token, page_details.url);
     }
 });
@@ -33,6 +34,9 @@ $('#btn_sign_in').click(function() {
         success: function(data, textStatus, jqXHR) {
             _token = data.result.token;
 
+            console.log(_token);
+            console.log(data);
+
             set_storage_object();
             setup_page();
         },
@@ -49,6 +53,7 @@ $('#btn_sign_in').click(function() {
 $('#btn_add_bookmark').click(function() {
 
     data.tags = $('#tags').val();
+    data.token = _token;
 
     $.ajax({
         url: 'http://localhost:5001/api/v1.0/bookmark/set',
@@ -81,8 +86,6 @@ function check_bookmark(token, url) {
         url: 'http://localhost:5001/api/v1.0/bookmark/get?token=' + token + '&url=' + escape(url),
         type: 'GET',
         success: function(data, textStatus, jqXHR) {
-            _token = token;
-
             set_storage_object();
 
             $('#sp_title').html(data.result.title);

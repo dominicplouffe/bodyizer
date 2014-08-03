@@ -11,9 +11,13 @@ def requires_auth(f):
 
         token = request.form.get('token', request.args.get('token', None))
 
+        print token
         _acc = None
         if token is not None:
             _acc = account.get_acount_by_id(token)
+
+        print _acc
+
 
         if _acc is None:
             return finish(

@@ -1,3 +1,4 @@
+from mongodbsearch import mongodbsearch
 from pymongo import MongoClient
 from datetime import datetime
 import shortner
@@ -9,6 +10,9 @@ def generate_key(short_url, user_id):
         'short_url': short_url,
         'user_id': user_id
     }
+
+def normalize_mongo_key(key):
+    return key.replace('.', '_')
 
 def insert_bookmark(
     title,
@@ -22,6 +26,7 @@ def insert_bookmark(
 
     short_url = shortner.get_url(url)
     _id = generate_key(short_url, user_id)
+    created_on = datetime.utcnow()
 
     rec = {
         'title': title,
@@ -32,11 +37,22 @@ def insert_bookmark(
         'tags': [t.strip() for t in tags.split(',')],
         'user_id': user_id,
         'short_url': short_url,
-        'created_on': datetime.utcnow(),
+        'created_on': created_on,
         '_id': _id
     }
 
     db.bookmarks.save(rec)
+
+    facets = {normalize_mongo_key(facet):1 for facet in ngrams}
+
+    facets[normalize_mongo_key(hostname)] = 1
+    mdbs = mongodbsearch.mongodb_search(db)
+    mdbs.index_document(
+        _id,
+        title + ' ' + body,
+        facets=facets,
+        **{'user_id': user_id, 'created_on': created_on}
+    )
 
     return rec
 
