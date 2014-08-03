@@ -1,18 +1,40 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory, abort, redirect
+from services import bookmark as bm
 import locale
+import os
 
 import auth
-# import bookmark
+import bookmark
 
 locale.setlocale(locale.LC_ALL, 'en_US')
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.register_blueprint(auth.auth, url_prefix='/auth')
-# app.register_blueprint(bookmark.bookmark, url_prefix='/api/v1.0/bookmark')
-# app.register_blueprint(gpx.gpx, url_prefix='/gpx')
-# app.register_blueprint(finances.finances, url_prefix='/finances')
-
+app.register_blueprint(bookmark.bookmark, url_prefix='/bookmarks')
 app.secret_key = '1qaz2wsx!'
+
+@app.route('/<url>')
+def short_url_redirect(url):
+
+    short_url = '/%s' % url
+
+    _bookmark = bm.get_bookmart_by_short(short_url)
+
+    if _bookmark is None:
+        abort(404)
+
+    return redirect(_bookmark['url'])
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('not_found.html'), 404
+
+@app.route('/favicon.ico')
+def favicon():
+    print os.path.join(app.root_path, 'static')
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                'favicon.ico')
+
 
 @app.route('/')
 def home_page_view():

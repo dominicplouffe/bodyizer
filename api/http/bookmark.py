@@ -23,7 +23,6 @@ def set():
         url,
         hostname,
         body,
-        ngrams,
         tags,
         token
     )
@@ -41,7 +40,7 @@ def get():
 
     short_url = shortner.get_url(url)
 
-    _bookmark = bm.get_bookmart(short_url, token)
+    _bookmark = bm.get_bookmark(short_url, token)
 
     if _bookmark is None:
         return finish({}, 404, "Bookmark not found.")
