@@ -3,6 +3,14 @@ var INVALID_TAGS = /form|img|script|combx|comment|community|disqus|extra|foot|he
 var VALID_TAGS = ["P", "TD", "PRE"];
 var INVALID_INNER_DIV_TAGS = /<(a|blockquote|dl|div|ol|p|pre|table|ul)/i;
 
+function init() {
+    chrome_check_connexion = document.getElementById('chrome_check_connexion');
+
+    if (chrome_check_connexion !== null) {
+        chrome_check_connexion.style.display = 'none';
+    }
+}
+
 function get_possible_elements() {
     var elements = document.getElementsByTagName('*');
 
@@ -221,3 +229,5 @@ function return_value() {
 }
 
 chrome.runtime.sendMessage(return_value(), function(response) {});
+
+init();
