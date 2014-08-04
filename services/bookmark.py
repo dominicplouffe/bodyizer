@@ -111,7 +111,6 @@ def search_bookmarks(user_id, keyword=''):
     if keyword == 'connexion':
         scoring = ('created_on', -1)
 
-    print scoring
     results = mdbs.search(
         keyword,
         conditions=conditions,
