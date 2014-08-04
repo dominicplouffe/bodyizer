@@ -1,12 +1,9 @@
 from flask import Flask, render_template, send_from_directory, abort, redirect
 from services import bookmark as bm
-import locale
 import os
 
 import auth
 import bookmark
-
-locale.setlocale(locale.LC_ALL, 'en_US')
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.register_blueprint(auth.auth, url_prefix='/auth')

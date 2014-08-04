@@ -77,13 +77,15 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="http://connexion.me"><img src="icon.png" style="max-height: 30px;" /> Connexion.me</a>
+                    <a class="navbar-brand" href="http://connexion.me" target="_blank">
+                        <img src="icon.png" style="max-height: 30px;" />
+                        <span id="popup_title">CONNEXION.ME</a>
+                    </a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Connexion.me</a></li>
-                        <li><a href="#logout" id="logout">Logout</a></li>
-                        <!-- <li><a href="#contact">Contact</a></li> -->
+                        <li><a href="#logout" id="logout" style="display: none;">Logout</a></li>
+                        <li><a href="#options" id="options" >Options</a></li>
                     </ul>
                 </div>
             </div>
@@ -99,7 +101,7 @@
                                 <tr>
                                     <td style="width: 100px;"><strong>Title:</strong></td>
                                     <td>
-                                        <input type="text" name="sp_title" id="sp_title" style="width: 590px;" class="form-control" placeholder="tag1,tag2,tag3" />
+                                        <input type="text" name="sp_title" id="sp_title" style="width: 590px;" class="form-control" placeholder="Title" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -136,7 +138,24 @@
                             <input type="text" id="login_email" class="form-control" placeholder="Email address" required autofocus>
                             <input type="password" id="login_password" class="form-control" placeholder="Password" required>
                             <button class="btn btn-lg btn-primary btn-block" type="submit" id="btn_sign_in">Sign in</button>
-                            <div style="padding-top: 10px;"><a href="http://connexion.me/accounts/create">Create a new connexion.me account</a></div>
+                            <div style="padding-top: 10px;"><a href="http://connexion.me/auth/signup" target="_blank">Create a new connexion.me account</a></div>
+                        </form>
+                    </div>
+
+                    <div id="update_options" class="cpanel">
+                        <form role="form">
+                            <h4>Options</h4>
+                            <table class="table table-bordered" style="width: 100%;">
+                                <tr>
+                                    <td style="width: 100px;"><strong>API URL:</strong></td>
+                                    <td>
+                                        <input type="text" name="api_url" id="api_url" style="width: 590px;" class="form-control" placeholder="http://connexion.me" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="text-align: right;">
+                                <button type="button" class="btn btn-primary" id="btn_save_options">Save Options</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -146,8 +165,8 @@
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
         <script src="popup.js"></script>
     </body>
 </html>

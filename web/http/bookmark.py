@@ -28,7 +28,7 @@ def tags():
 
     keyword = request.args.get('q', '')
 
-    results = bm.search_bookmarks(session['_u'], keyword=keyword)
+    results = bm.search_bookmarks(session['_u'], keyword=keyword, max_recs=1)
 
     return render_template(
         'tags.html',

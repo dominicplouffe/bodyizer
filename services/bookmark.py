@@ -81,7 +81,7 @@ def delete_bookmark(short_url, user_id):
     db.bookmarks.remove({'_id': _id})
     db.documents.remove({'_id': '%s_%s' % (short_url, user_id)})
 
-def search_bookmarks(user_id, keyword=''):
+def search_bookmarks(user_id, keyword='', max_recs=100):
     mdbs = mongodbsearch.mongodb_search(db)
 
     if keyword is None:
@@ -115,7 +115,8 @@ def search_bookmarks(user_id, keyword=''):
         keyword,
         conditions=conditions,
         fields=fields,
-        scoring=scoring
+        scoring=scoring,
+        max_recs=max_recs,
     )
 
     hostnames = results[1].get('hostname', {}).items()

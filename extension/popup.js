@@ -1,6 +1,7 @@
 var BGPage = chrome.extension.getBackgroundPage();
 var page_details = BGPage.get_page_details();
 var _token = null;
+var _api_url = null;
 
 data = {
     'title': page_details.title,
@@ -21,6 +22,21 @@ chrome.storage.local.get('token', function(obj) {
     }
 });
 
+chrome.storage.local.get('api_url', function(obj) {
+
+    if (obj.api_url === undefined || obj.api_url === null) {
+        _api_url = 'http://connexion.me';
+    } else {
+        _api_url = obj.api_url;
+    }
+
+    if (_api_url !== 'http://connexion.me') {
+        $('#popup_title').attr('style', 'color: red');
+    }
+
+    $('#api_url').val(_api_url);
+});
+
 $('#btn_sign_in').click(function() {
     form_data = {
         'email': $('#login_email').val(),
@@ -28,7 +44,7 @@ $('#btn_sign_in').click(function() {
     };
 
     $.ajax({
-        url: 'http://localhost:5001/api/v1.0/auth/login',
+        url: 'http://connexion.me/api/v1.0/auth/login',
         type: 'POST',
         data: form_data,
         success: function(data, textStatus, jqXHR) {
@@ -59,7 +75,7 @@ $('#btn_add_bookmark').click(function() {
     data.title = $('#sp_title').val();
 
     $.ajax({
-        url: 'http://localhost:5001/api/v1.0/bookmark/set',
+        url: 'http://connexion.me/api/v1.0/bookmark/set',
         type: 'POST',
         data: data,
         success: function(data, textStatus, jqXHR) {
@@ -84,9 +100,28 @@ $('#logout').click(function() {
     return false;
 });
 
+$('#options').click(function() {
+    $('.cpanel').hide();
+    $('#update_options').show();
+});
+
+$('#btn_save_options').click(function() {
+    _api_url = $('#api_url').val();
+
+    set_storage_object();
+
+    logout();
+});
+
+$(document).on('click','.navbar-collapse.in',function(e) {
+    if( $(e.target).is('a') ) {
+        $(this).collapse('hide');
+    }
+});
+
 function check_bookmark(token, url) {
     $.ajax({
-        url: 'http://localhost:5001/api/v1.0/bookmark/get?token=' + token + '&url=' + escape(url),
+        url: 'http://connexion.me/api/v1.0/bookmark/get?token=' + token + '&url=' + escape(url),
         type: 'GET',
         success: function(data, textStatus, jqXHR) {
             set_storage_object();
@@ -115,6 +150,7 @@ function check_bookmark(token, url) {
 }
 
 function setup_page() {
+    $('#logout').show();
     $('.cpanel').hide();
     $('#new_bookmark').show();
 }
@@ -129,8 +165,12 @@ function logout() {
 
 function set_storage_object() {
     obj = {
-        'token': _token
+        'token': _token,
+        'api_url': _api_url
     };
+
+    console.log('set');
+    console.log(obj);
 
     chrome.storage.local.set(obj, function() {});
 }
