@@ -22,6 +22,25 @@ def bookmarks():
         len=len
     )
 
+@bookmark.route('/tags', methods=['GET'])
+@requires_auth
+def tags():
+
+    keyword = request.args.get('q', '')
+
+    results = bm.search_bookmarks(session['_u'], keyword=keyword)
+
+    return render_template(
+        'tags.html',
+        bookmarks=results['bookmarks'],
+        facets=results['facets'],
+        bookmark_count=results['bookmark_count'],
+        keyword=keyword if keyword != 'connexion' else None,
+        enumerate=enumerate,
+        len=len,
+        int=int
+    )
+
 @bookmark.route('/delete', methods=['GET'])
 @requires_auth
 def delete():

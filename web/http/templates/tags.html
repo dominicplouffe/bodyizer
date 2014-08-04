@@ -1,0 +1,58 @@
+{% extends "base_main.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        {% include "keyword_box.html" %}
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                {% if keyword %}
+                    Below are all the tags that match your search query
+                {% else %}
+                    Below are all the tags that you have on all your bookmarks
+                {% endif %}
+            </div>
+
+             <div class="panel-body">
+                <p>
+                    {% for i, (tag, cnt) in enumerate(facets['tags']) %}
+                        <div style="padding-bottom: 15px; width: 20%; float: left;">
+                            <span class="badge">{{ cnt }}</span> <a href="#" class="tags" value="{{ tag }}">{{ tag }}</a>
+                        </div>
+                    {% endfor %}
+                </p>
+              </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  <script>
+      var keyword = '{% if keyword %}{{ keyword }}{% endif %}';
+
+      $(document).ready(function() {
+          $('.close').click(function() {
+              document.location.href = '/bookmarks/tags';
+          });
+
+          $('.tags').click(function() {
+              tag = $(this).attr('value');
+
+              if (keyword.indexOf('tags:') > -1) {
+                  keyword = keyword + ',' + tag;
+              } else if (keyword.length > 0) {
+                  keyword = keyword + ' tags:' + tag;
+              } else {
+                  keyword = 'tags:' + tag;
+              }
+
+              document.location.href = '/bookmarks?q=' + keyword;
+
+              return false;
+          });
+      });
+  </script>
+{% endblock %}

@@ -11,7 +11,7 @@
             {% endif %}
         {% endfor %}
         {% if len(facets['tags']) > 15 %}
-            <li class="more"><a href="#"><strong>See More...</strong></a></li>
+            <li class="more"><a href="/bookmarks/tags{% if keyword %}?q={{ keyword }}{% endif %}"><strong>See More...</strong></a></li>
         {% endif %}
       </ul>
       {% if facets['hostname'] %}<h4>Sites</h4>{% endif %}
@@ -21,18 +21,10 @@
                 <li><a href="#"><span class="badge">{{ cnt }}</span> {{ tag }}</a></li>
             {% endif %}
         {% endfor %}
-        {% if len(facets['hostname']) > 15 %}
-            <li class="more"><a href="#"><strong>See More...</strong></a></li>
-        {% endif %}
       </ul>
     </div>
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      {% if keyword %}
-        <div class="alert alert-info alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <strong>Search Query:</strong> <em>{{ keyword }}</em>
-        </div>
-      {% endif %}
+      {% include "keyword_box.html" %}
 
       <div class="table-responsive">
         <table class="table table-striped">
