@@ -28,6 +28,8 @@ def insert_bookmark(
     short_url = shortner.get_url(url)
     _id = generate_key(short_url, user_id)
     created_on = datetime.utcnow()
+    title = title.title()
+
     tags = re.findall('\w+', tags)
     tags.sort()
 
@@ -105,10 +107,16 @@ def search_bookmarks(user_id, keyword=''):
         tags = tags[0].split(',')
         conditions['facets.tags'] = {'$all': tags}
 
+    scoring = None
+    if keyword == 'connexion':
+        scoring = ('created_on', -1)
+
+    print scoring
     results = mdbs.search(
         keyword,
         conditions=conditions,
-        fields=fields
+        fields=fields,
+        scoring=scoring
     )
 
     hostnames = results[1].get('hostname', {}).items()
