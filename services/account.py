@@ -27,6 +27,9 @@ def create_account(email_address, password):
 
     return _id
 
+def get_account_by_email(email_address):
+    return db.accounts.find_one({'email_address': email_address})
+
 def validate_account(email_address, password):
 
     query = {

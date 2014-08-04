@@ -34,6 +34,43 @@ def check():
         error='Username or Password were not found.'
     )
 
+@auth.route('/signup')
+def signup():
+    return render_template(
+        'signup.html',
+    )
+
+@auth.route('/signup/new', methods=['POST'])
+def signup_new():
+
+    error = None
+    email = request.form.get('email')
+    password = request.form.get('password')
+    confirmation = request.form.get('confirmation')
+
+    email_check = account.get_account_by_email(email)
+
+    if email_check:
+        error = 'An account with that email address already exists.'
+
+    if password != confirmation:
+        error = 'Password and confirmation do not match.'
+
+    if error:
+        return render_template(
+            'signup.html',
+            error=error
+        )
+
+    _id = account.create_account(
+        email,
+        password
+    )
+
+    session['_u'] = str(_id)
+
+    return redirect('/bookmarks')
+
 @auth.route('/logout')
 def logout():
     session.pop('_u')

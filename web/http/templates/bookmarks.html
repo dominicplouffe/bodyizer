@@ -26,43 +26,48 @@
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       {% include "keyword_box.html" %}
 
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Tags</th>
-              <th>Site</th>
-              <th>&nbsp;</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% if bookmark_count == 0 %}
-                <tr class="warning">
-                    <td colspan="4">
-                        <strong><center>No bookmarks were found matching your search query</center></strong>
-                    </td>
-                </tr>
-            {% endif %}
-            {% for bookmark in bookmarks %}
-            <tr>
-              <td>{{ bookmark['title'] }}</td>
-              <td>
-                {% for tag in bookmark['tags'] %}
-                    <a href="#" class="tags" value="{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
-                {% endfor %}
-              </td>
-              <td>{{ bookmark['hostname'] }}</td>
-              <td>
-                <a href="/bookmarks/delete?id={{ bookmark['_id'] }}" class="delete_bookmark"><span class="glyphicon glyphicon-trash"></span></a>
-                <a href="{{ bookmark['short_url'] }}" target="_blank"><span class="glyphicon glyphicon-expand"></span></a>
-              </td>
-            </tr>
-            {% endfor %}
+      <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                Below are your bookmarks!
+            </div>
 
-          </tbody>
-        </table>
-      </div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Tags</th>
+                  <th>Site</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if bookmark_count == 0 %}
+                    <tr class="warning">
+                        <td colspan="4">
+                            <strong><center>No bookmarks were found matching your search query</center></strong>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% for bookmark in bookmarks %}
+                <tr>
+                  <td>{{ bookmark['title'] }}</td>
+                  <td>
+                    {% for tag in bookmark['tags'] %}
+                        <a href="#" class="tags" value="{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
+                    {% endfor %}
+                  </td>
+                  <td>{{ bookmark['hostname'] }}</td>
+                  <td>
+                    <a href="/bookmarks/delete?id={{ bookmark['_id'] }}" class="delete_bookmark"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="{{ bookmark['short_url'] }}" target="_blank"><span class="glyphicon glyphicon-expand"></span></a>
+                  </td>
+                </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+        </div>
     </div>
   </div>
 {% endblock %}
