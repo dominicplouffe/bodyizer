@@ -59,7 +59,7 @@
           <ul class="nav nav-sidebar">
             {% for i, (tag, cnt) in enumerate(facets['tags']) %}
                 {% if i <= 14 %}
-                    <li><a href="#"><span class="badge">{{ cnt }}</span> {{ tag }}</a></li>
+                    <li><a href="#" class="tags" value="{{ tag }}"><span class="badge">{{ cnt }}</span> {{ tag }}</a></li>
                 {% endif %}
             {% endfor %}
             {% if len(facets['tags']) > 15 %}
@@ -79,7 +79,6 @@
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h3>Bookmarks</h3>
           {% if keyword %}
             <div class="alert alert-info alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -110,12 +109,12 @@
                   <td>{{ bookmark['title'] }}</td>
                   <td>
                     {% for tag in bookmark['tags'] %}
-                        <span class="label label-primary">{{ tag }}</span>
+                        <a href="#" class="tags" value="{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
                     {% endfor %}
                   </td>
                   <td>{{ bookmark['hostname'] }}</td>
                   <td>
-                    <a href="/bookmarks/delete?id={{ bookmark['_id'] }}"><span class="glyphicon glyphicon-trash"></span></a>
+                    <a href="/bookmarks/delete?id={{ bookmark['_id'] }}" class="delete_bookmark"><span class="glyphicon glyphicon-trash"></span></a>
                     <a href="{{ bookmark['short_url'] }}" target="_blank"><span class="glyphicon glyphicon-expand"></span></a>
                   </td>
                 </tr>
@@ -134,10 +133,35 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script>
-        $(document).ready(function() {
+        var keyword = '{% if keyword %}{{ keyword }}{% endif %}';
 
+        $(document).ready(function() {
             $('.close').click(function() {
                 document.location.href = '/bookmarks';
+            });
+
+            $('.tags').click(function() {
+                tag = $(this).attr('value');
+
+                if (keyword.indexOf('tags:') > -1) {
+                    keyword = keyword + ',' + tag;
+                } else if (keyword.length > 0) {
+                    keyword = keyword + ' tags:' + tag;
+                } else {
+                    keyword = 'tags:' + tag;
+                }
+
+                document.location.href = '/bookmarks?q=' + keyword;
+
+                return false;
+            });
+
+            $('.delete_bookmark').click(function() {
+                if (confirm('You are about to delete a bookmark, are you okay with that?')) {
+                    return true;
+                }
+
+                return false;
             });
         });
     </script>

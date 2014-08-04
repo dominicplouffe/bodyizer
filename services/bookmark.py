@@ -101,6 +101,7 @@ def search_bookmarks(user_id, keyword=''):
     conditions = {'user_id': user_id}
 
     if len(tags) > 0:
+        tags = tags[0].split(',')
         conditions['facets.tags'] = {'$all': tags}
 
     results = mdbs.search(
