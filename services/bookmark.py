@@ -28,7 +28,7 @@ def insert_bookmark(
     short_url = shortner.get_url(url)
     _id = generate_key(short_url, user_id)
     created_on = datetime.utcnow()
-    tags = [t.strip() for t in tags.split(',')]
+    tags = re.findall('\w+', tags)
 
     rec = {
         'title': title,
