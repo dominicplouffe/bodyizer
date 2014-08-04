@@ -29,6 +29,7 @@ def insert_bookmark(
     _id = generate_key(short_url, user_id)
     created_on = datetime.utcnow()
     tags = re.findall('\w+', tags)
+    tags.sort()
 
     rec = {
         'title': title,
