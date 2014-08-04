@@ -18,7 +18,17 @@
       <ul class="nav nav-sidebar">
         {% for i, (tag, cnt) in enumerate(facets['hostname']) %}
             {% if i <= 14 %}
+              {% if len(tag) > 20 %}
+                <li>
+                  <a href="#">
+                    <span class="badge">{{ cnt }}</span>
+                    <span title="{{ tag }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ tag[0:7] }}...{{ tag[12:] }}</span>
+                  </a>
+                </li>
+              {% else %}
                 <li><a href="#"><span class="badge">{{ cnt }}</span> {{ tag }}</a></li>
+              {% endif %}
+
             {% endif %}
         {% endfor %}
       </ul>
@@ -57,7 +67,13 @@
                         <a href="#" class="tags" value="{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
                     {% endfor %}
                   </td>
-                  <td>{{ bookmark['hostname'] }}</td>
+                  <td>
+                    {% if len(bookmark['hostname']) > 20 %}
+                      <span title="{{ bookmark['hostname'] }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ bookmark['hostname'][0:7] }}...{{ bookmark['hostname'][12:] }}</span>
+                    {% else %}
+                      {{ bookmark['hostname'] }}
+                    {% endif %}
+                  </td>
                   <td>
                     <a href="/bookmarks/delete?id={{ bookmark['_id'] }}" class="delete_bookmark"><span class="glyphicon glyphicon-trash"></span></a>
                     <a href="{{ bookmark['short_url'] }}" target="_blank"><span class="glyphicon glyphicon-expand"></span></a>
@@ -104,6 +120,8 @@
 
               return false;
           });
+
+          $('.hostnames').tooltip({});
       });
   </script>
 {% endblock %}

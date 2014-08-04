@@ -1,5 +1,6 @@
 from flask import Flask, render_template, send_from_directory, abort, redirect
 from services import bookmark as bm
+import sys
 import os
 
 import auth
@@ -40,4 +41,6 @@ def home_page_view():
     )
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5002)
+
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 5002
+    app.run(debug=True, port=port)

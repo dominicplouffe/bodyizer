@@ -1,4 +1,5 @@
 from flask import Flask
+import sys
 
 import auth
 import bookmark
@@ -12,4 +13,5 @@ app.register_blueprint(bookmark.bookmark, url_prefix='/api/v1.0/bookmark')
 app.secret_key = '1qaz2wsx!'
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 5001
+    app.run(debug=True, port=port)
