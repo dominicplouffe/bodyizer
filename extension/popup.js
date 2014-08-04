@@ -36,7 +36,7 @@ $('#btn_sign_in').click(function() {
 
             set_storage_object();
 
-            $('#sp_title').html(page_details.title);
+            $('#sp_title').val(page_details.title);
             $('#sp_url').html(page_details.url);
             $('#sp_hostname').html(page_details.hostname);
 
@@ -56,6 +56,7 @@ $('#btn_add_bookmark').click(function() {
 
     data.tags = $('#tags').val();
     data.token = _token;
+    data.title = $('#sp_title').val();
 
     $.ajax({
         url: 'http://localhost:5001/api/v1.0/bookmark/set',
@@ -90,7 +91,7 @@ function check_bookmark(token, url) {
         success: function(data, textStatus, jqXHR) {
             set_storage_object();
 
-            $('#sp_title').html(data.result.title);
+            $('#sp_title').val(data.result.title);
             $('#sp_url').html(data.result.url);
             $('#sp_hostname').html(data.result.hostname);
             $('#tags').val(data.result.tags);
@@ -101,7 +102,7 @@ function check_bookmark(token, url) {
             console.log(textStatus);
 
             if (jqXHR.status == 404) {
-                $('#sp_title').html(page_details.title);
+                $('#sp_title').val(page_details.title);
                 $('#sp_url').html(page_details.url);
                 $('#sp_hostname').html(page_details.hostname);
 
