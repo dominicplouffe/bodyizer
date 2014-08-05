@@ -18,11 +18,11 @@
       <ul class="nav nav-sidebar">
         {% for i, (tag, cnt) in enumerate(facets['hostname']) %}
             {% if i <= 14 %}
-              {% if len(tag) > 20 %}
+              {% if len(tag) > 17 %}
                 <li>
                   <a href="#">
                     <span class="badge">{{ cnt }}</span>
-                    <span title="{{ tag }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ tag[0:7] }}...{{ tag[12:] }}</span>
+                    <span title="{{ tag }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ tag[0:7] }}...{{ tag[15:] }}</span>
                   </a>
                 </li>
               {% else %}
@@ -68,13 +68,13 @@
                     {% endfor %}
                   </td>
                   <td>
-                    {% if len(bookmark['hostname']) > 20 %}
-                      <span title="{{ bookmark['hostname'] }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ bookmark['hostname'][0:7] }}...{{ bookmark['hostname'][12:] }}</span>
+                    {% if len(bookmark['hostname']) > 17 %}
+                      <span title="{{ bookmark['hostname'] }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ bookmark['hostname'][0:7] }}...{{ bookmark['hostname'][15:] }}</span>
                     {% else %}
                       {{ bookmark['hostname'] }}
                     {% endif %}
                   </td>
-                  <td>
+                  <td nowrap="nowrap">
                     <a href="/bookmarks/delete?id={{ bookmark['_id'] }}" class="delete_bookmark"><span class="glyphicon glyphicon-trash"></span></a>
                     <a href="{{ bookmark['short_url'] }}" target="_blank"><span class="glyphicon glyphicon-expand"></span></a>
                   </td>

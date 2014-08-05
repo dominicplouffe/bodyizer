@@ -15,7 +15,7 @@
 
     "background": {
         "scripts": ["background.js"],
-        "persistent": false
+        "persistent": true
     },
     "permissions": [
         "storage",
@@ -31,4 +31,8 @@
         "js": ["content.js"],
         "run_at": "document_end"
     }]
+    // ,
+    // "chrome_url_overrides" : {
+    //     "newtab": "test.html"
+    // }
 }

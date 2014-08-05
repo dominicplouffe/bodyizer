@@ -3,11 +3,57 @@ var INVALID_TAGS = /form|img|script|combx|comment|community|disqus|extra|foot|he
 var VALID_TAGS = ["P", "TD", "PRE"];
 var INVALID_INNER_DIV_TAGS = /<(a|blockquote|dl|div|ol|p|pre|table|ul)/i;
 
+var _google_check_id = null;
+var _token = null;
+var _api_url = null;
+
 function init() {
     chrome_check_connexion = document.getElementById('chrome_check_connexion');
 
     if (chrome_check_connexion !== null) {
         chrome_check_connexion.style.display = 'none';
+    }
+
+    _google_check_id = setInterval("populate_google();", 1000);
+}
+
+function populate_google() {
+    if (document.location.href.indexOf('www.google') == -1) {
+        clearInterval(_google_check_id);
+    } else {
+        rhs = document.getElementById('rhs_block');
+
+        if (rhs !== null) {
+            clearInterval(_google_check_id);
+
+            var search_value = document.getElementsByName('q')[0].value;
+
+            var xmlhttp=new XMLHttpRequest();
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                {
+                    var html = '<img src="http://connexion.me/static/img/icon.png" style="max-width: 50px; vertical-align: middle;" />';
+                    html += '<span style="font-size: 20px;"> CONNEXION.ME</span>';
+                    html += '<br/>';
+                    html += 'Search Results from CONNEXION.ME';
+                    html += '<br/><br/>';
+                    result = JSON.parse(xmlhttp.response)['result'];
+
+                    for (var i = 0; i < result.length; i++) {
+                        var r = result[i];
+
+                        html += '<div style="padding-bottom: 5px;">';
+                        html += '<a href="' + r.short_url + '">' + r.title + '</a>';
+                        html += '</div>';
+                    }
+
+                    rhs.innerHTML += html + rhs.innerHTML;
+                }
+            };
+            xmlhttp.open("GET","http://localhost:5001/api/v1.0/bookmark/search?token=53de4ebd4adfdc89fd78989b&q=the",true);
+            xmlhttp.send();
+        }
     }
 }
 
@@ -225,9 +271,22 @@ function return_value() {
     return_object.hostname = document.location.hostname;
     return_object.title = get_title();
 
-    return return_object;
+    port.postMessage({'action': 'send_info', 'result': return_object});
 }
 
-chrome.runtime.sendMessage(return_value(), function(response) {});
+port = chrome.extension.connect();
+port.postMessage({'action': 'ready'});
+
+port.onMessage.addListener(function(request) {
+    if (request.action == 'get_info') {
+        return_value();
+    } else if (request.action == 'set_token') {
+        _token = request.result.token;
+        console.log(_token);
+    } else if (request.action == 'set_api_url') {
+        _api_url = request.result.api_url;
+        console.log(_api_url);
+    }
+});
 
 init();

@@ -14,7 +14,6 @@ def set():
     url = request.form.get('url')
     hostname = request.form.get('hostname')
     body = request.form.get('body')
-    ngrams = request.form.get('ngrams')
     token = request.form.get('token')
     tags = request.form.get('tags')
 
@@ -55,3 +54,28 @@ def get():
         },
         200
     )
+
+@bookmark.route('/search', methods=['GET'])
+@requires_auth
+def search():
+
+    keyword = request.args.get('q', '')
+    token = request.args.get('token')
+
+    results = bm.search_bookmarks(token, keyword=keyword)
+
+    bookmarks = [
+        {
+            'title': b['title'],
+            'short_url': b['short_url'],
+            'url': b['url']
+        }
+        for b in results['bookmarks']
+    ]
+
+    return finish(
+        bookmarks,
+        200
+    )
+
+

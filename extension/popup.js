@@ -1,41 +1,51 @@
-var BGPage = chrome.extension.getBackgroundPage();
-var page_details = BGPage.get_page_details();
+var page_details = null;
+var data = null;
 var _token = null;
 var _api_url = null;
 
-data = {
-    'title': page_details.title,
-    'url': page_details.url,
-    'hostname': page_details.hostname,
-    'tags': '',
-    'token': null,
-    'body': page_details.body,
-    'ngrams': JSON.stringify(page_details.ngrams)
-};
+chrome.runtime.sendMessage(
+    {'action': 'popup_ready'},
+    function(request, sender, sendResponse) {
+        page_details = request.result;
 
-chrome.storage.local.get('token', function(obj) {
-    if (obj.token === undefined || obj.token === null) {
-        $('#login').show();
-    } else {
-        _token = obj.token;
-        check_bookmark(obj.token, page_details.url);
+        data = {
+            'title': page_details.title,
+            'url': page_details.url,
+            'hostname': page_details.hostname,
+            'tags': '',
+            'token': null,
+            'body': page_details.body,
+        };
+
+        get_storage_data();
     }
-});
+);
 
-chrome.storage.local.get('api_url', function(obj) {
+function get_storage_data() {
+    chrome.storage.local.get('token', function(obj) {
+        if (obj.token === undefined || obj.token === null) {
+            $('#login').show();
+        } else {
+            _token = obj.token;
+            check_bookmark(obj.token, page_details.url);
+        }
+    });
 
-    if (obj.api_url === undefined || obj.api_url === null) {
-        _api_url = 'http://connexion.me';
-    } else {
-        _api_url = obj.api_url;
-    }
+    chrome.storage.local.get('api_url', function(obj) {
 
-    if (_api_url !== 'http://connexion.me') {
-        $('#popup_title').attr('style', 'color: red');
-    }
+        if (obj.api_url === undefined || obj.api_url === null) {
+            _api_url = 'http://connexion.me';
+        } else {
+            _api_url = obj.api_url;
+        }
 
-    $('#api_url').val(_api_url);
-});
+        if (_api_url !== 'http://connexion.me') {
+            $('#popup_title').attr('style', 'color: red');
+        }
+
+        $('#api_url').val(_api_url);
+    });
+}
 
 $('#btn_sign_in').click(function() {
     form_data = {
@@ -169,8 +179,10 @@ function set_storage_object() {
         'api_url': _api_url
     };
 
-    console.log('set');
-    console.log(obj);
-
     chrome.storage.local.set(obj, function() {});
+
+    chrome.runtime.sendMessage(
+        {'action': 'set_storage', 'result': obj},
+        function(request, sender, sendResponse) { }
+    );
 }
