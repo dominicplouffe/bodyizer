@@ -52,10 +52,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     active_url = url;
 });
 
-chrome.tabs.onRemoved.addListener(function(tabId) {
-    chrome.tabs.get(tabId, function(tab) {
+chrome.tabs.onActivated.addListener(function(tab) {
+    chrome.tabs.get(tab.tabId, function(tab) {
         url = tab.url;
-        details[url] = undefined;
+        active_url = url;
     });
 });
 
