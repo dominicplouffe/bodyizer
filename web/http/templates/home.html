@@ -1,5 +1,18 @@
 {% extends "base_home.html" %}
 
+{% block head %}
+  <style>
+    .container-screenshot {
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    .container-screenshot img {
+      width: 90%;
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
   <!-- Main jumbotron for a primary marketing message or call to action -->
   <div class="jumbotron">
@@ -14,6 +27,10 @@
 
   <div class="container">
     <div class="row">
+
+      <div class="container-screenshot">
+        <img src="/static/img/screenshot.png" border="0" />
+      </div>
       <!-- <div class="col-md-4">
         <h2>Download Extension</h2>
         <p>Need some text here</p>
@@ -31,7 +48,7 @@
     <!-- <hr> -->
 
     <footer>
-      <p>&copy;<a href="http://dplouffe.ca" target="_blank">Dominic Plouffe</a> 2014</p>
+      <p>&copy;&nbsp;<a href="http://dplouffe.ca" target="_blank">Dominic Plouffe</a> 2014</p>
     </footer>
   </div> <!-- /container -->
 {% endblock %}
