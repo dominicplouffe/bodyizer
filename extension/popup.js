@@ -147,7 +147,7 @@ function check_bookmark(token, url) {
             $('#sp_hostname').html(data.result.hostname);
             $('#tags').val(data.result.tags);
 
-            if (data.result.image === undefined) {
+            if (data.result.image.length == 0) {
                 $('#img_source_image').attr('src', page_details.image);
             } else {
                 $('#img_source_image').attr('src', data.image);

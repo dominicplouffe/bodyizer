@@ -1,5 +1,46 @@
 {% extends "base_main.html" %}
 
+{% block head %}
+
+<style>
+  .item {
+    width: 25%;
+    border: 1px solid #f0f0f0;
+    float: left;
+    margin: 5px;
+    background-color: white;
+
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    border-top-left-radius: 5px;
+
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-right-radius: 5px;
+
+    text-align: center;
+  }
+
+  .item_bottom {
+    vertical-align: bottom;
+    background-color: #2f2f2f;
+    color: #f0f0f0;
+
+    padding: 3px;
+
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-left-radius: 5px;
+
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px;
+  }
+  .clear { clear: both;}
+</style>
+
+{% endblock %}
+
 {% block content %}
   <div class="row">
     <div class="col-sm-3 col-md-2 sidebar">
@@ -35,6 +76,21 @@
     </div>
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
       {% include "keyword_box.html" %}
+
+      <div class="item">
+        <img src="http://localhost:5002/static/img/icon.png" style="min-width: 100px;" />
+        <div class="item_bottom">
+          test title
+        </div>
+      </div>
+      <div class="item"><img src="http://localhost:5002/static/img/icon.png" style="min-width: 100px;" /></div>
+      <div class="item"><img src="http://localhost:5002/static/img/icon.png" style="min-width: 100px;" /></div>
+      <div class="item"><img src="http://localhost:5002/static/img/icon.png" style="min-width: 100px;" /></div>
+      <div class="item"><img src="http://localhost:5002/static/img/icon.png" style="min-width: 100px;" /></div>
+      <div class="item"><img src="http://localhost:5002/static/img/icon.png" style="min-width: 100px;" /></div>
+      <div class="item"><img src="http://localhost:5002/static/img/icon.png" style="min-width: 100px;" /></div>
+
+      <div class="clear"></div>
 
       <div class="panel panel-default">
             <!-- Default panel contents -->
@@ -122,6 +178,13 @@
           });
 
           $('.hostnames').tooltip({});
+
+          var $container = $('#masonry_container');
+          // initialize
+          $container.masonry({
+            columnWidth: 200,
+            itemSelector: '.item'
+          });
       });
   </script>
 {% endblock %}
