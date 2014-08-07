@@ -22,6 +22,7 @@ def insert_bookmark(
     hostname,
     body,
     tags,
+    image,
     user_id
 ):
 
@@ -39,6 +40,7 @@ def insert_bookmark(
         'hostname': hostname,
         'body': body,
         'tags': tags,
+        'image': image,
         'user_id': user_id,
         'short_url': short_url,
         'created_on': created_on,
@@ -98,6 +100,7 @@ def search_bookmarks(user_id, keyword='', max_recs=100):
         'short_url',
         'created_on',
         'tags',
+        'image',
         'hostname'
     ]
 

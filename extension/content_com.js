@@ -7,6 +7,11 @@ function send_page_details() {
     return_object.url = document.location.href;
     return_object.hostname = document.location.hostname;
     return_object.title = get_title();
+    return_object.image = find_image();
+
+    if (return_object.title) {
+        return_object.title = return_object.title.trim();
+    }
 
     port.postMessage({'action': 'send_info', 'result': return_object});
 }

@@ -16,6 +16,7 @@ def set():
     body = request.form.get('body')
     token = request.form.get('token')
     tags = request.form.get('tags')
+    image = request.form.get('image')
 
     _bookmark = bm.insert_bookmark(
         title,
@@ -23,6 +24,7 @@ def set():
         hostname,
         body,
         tags,
+        image,
         token
     )
 
@@ -50,7 +52,8 @@ def get():
             'url': _bookmark['url'],
             'hostname': _bookmark['hostname'],
             'tags': ','.join(_bookmark['tags']),
-            'short_url': _bookmark['short_url']
+            'short_url': _bookmark['short_url'],
+            'image': _bookmark.get('image', '')
         },
         200
     )
@@ -68,7 +71,8 @@ def search():
         {
             'title': b['title'],
             'short_url': b['short_url'],
-            'url': b['url']
+            'url': b['url'],
+            'image': b.get('image', '')
         }
         for b in results['bookmarks']
     ]

@@ -3,25 +3,45 @@ var data = null;
 var _token = null;
 var _api_url = null;
 
-chrome.runtime.sendMessage(
-    {'action': 'popup_ready'},
-    function(request, sender, sendResponse) {
-        page_details = request.result;
+chrome.storage.local.get('api_url', function(obj) {
 
-        data = {
-            'title': page_details.title,
-            'url': page_details.url,
-            'hostname': page_details.hostname,
-            'tags': '',
-            'token': null,
-            'body': page_details.body,
-        };
-
-        get_storage_data();
+    if (obj.api_url === undefined || obj.api_url === null) {
+        _api_url = 'http://connexion.me';
+    } else {
+        _api_url = obj.api_url;
     }
-);
 
-function get_storage_data() {
+    if (_api_url !== 'http://connexion.me') {
+        $('#popup_title').attr('style', 'color: red');
+    }
+
+    $('#api_url').val(_api_url);
+
+    chrome.runtime.sendMessage(
+        {'action': 'popup_ready'},
+        function(request, sender, sendResponse) {
+            page_details = request.result;
+
+            if (page_details.image === '') {
+                page_details.image = 'http://connexion.me/static/img/icon.png';
+            }
+
+            data = {
+                'title': page_details.title,
+                'url': page_details.url,
+                'hostname': page_details.hostname,
+                'tags': '',
+                'token': null,
+                'body': page_details.body,
+                'image': page_details.image
+            };
+
+            check_login_status();
+        }
+    );
+});
+
+function check_login_status() {
     chrome.storage.local.get('token', function(obj) {
         if (obj.token === undefined || obj.token === null) {
             $('#login').show();
@@ -29,21 +49,6 @@ function get_storage_data() {
             _token = obj.token;
             check_bookmark(obj.token, page_details.url);
         }
-    });
-
-    chrome.storage.local.get('api_url', function(obj) {
-
-        if (obj.api_url === undefined || obj.api_url === null) {
-            _api_url = 'http://connexion.me';
-        } else {
-            _api_url = obj.api_url;
-        }
-
-        if (_api_url !== 'http://connexion.me') {
-            $('#popup_title').attr('style', 'color: red');
-        }
-
-        $('#api_url').val(_api_url);
     });
 }
 
@@ -54,7 +59,7 @@ $('#btn_sign_in').click(function() {
     };
 
     $.ajax({
-        url: 'http://connexion.me/api/v1.0/auth/login',
+        url: _api_url + '/api/v1.0/auth/login',
         type: 'POST',
         data: form_data,
         success: function(data, textStatus, jqXHR) {
@@ -65,6 +70,7 @@ $('#btn_sign_in').click(function() {
             $('#sp_title').val(page_details.title);
             $('#sp_url').html(page_details.url);
             $('#sp_hostname').html(page_details.hostname);
+            $('#img_source_image').attr('src', page_details.image);
 
             setup_page();
         },
@@ -85,7 +91,7 @@ $('#btn_add_bookmark').click(function() {
     data.title = $('#sp_title').val();
 
     $.ajax({
-        url: 'http://connexion.me/api/v1.0/bookmark/set',
+        url: _api_url + '/api/v1.0/bookmark/set',
         type: 'POST',
         data: data,
         success: function(data, textStatus, jqXHR) {
@@ -131,7 +137,7 @@ $(document).on('click','.navbar-collapse.in',function(e) {
 
 function check_bookmark(token, url) {
     $.ajax({
-        url: 'http://connexion.me/api/v1.0/bookmark/get?token=' + token + '&url=' + escape(url),
+        url: _api_url + '/api/v1.0/bookmark/get?token=' + token + '&url=' + escape(url),
         type: 'GET',
         success: function(data, textStatus, jqXHR) {
             set_storage_object();
@@ -140,6 +146,12 @@ function check_bookmark(token, url) {
             $('#sp_url').html(data.result.url);
             $('#sp_hostname').html(data.result.hostname);
             $('#tags').val(data.result.tags);
+
+            if (data.result.image === undefined) {
+                $('#img_source_image').attr('src', page_details.image);
+            } else {
+                $('#img_source_image').attr('src', data.image);
+            }
 
             setup_page();
         },
@@ -150,6 +162,7 @@ function check_bookmark(token, url) {
                 $('#sp_title').val(page_details.title);
                 $('#sp_url').html(page_details.url);
                 $('#sp_hostname').html(page_details.hostname);
+                $('#img_source_image').attr('src', page_details.image);
 
                 setup_page();
             } else if (jqXHR.status == 401) {
