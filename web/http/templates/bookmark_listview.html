@@ -1,0 +1,45 @@
+<div class="panel panel-default">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Tags</th>
+          <th>Site</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if bookmark_count == 0 %}
+            <tr class="warning">
+                <td colspan="4">
+                    <strong><center>No bookmarks were found matching your search query</center></strong>
+                </td>
+            </tr>
+        {% endif %}
+        {% for bookmark in bookmarks %}
+        <tr>
+          <td>
+            {{ bookmark['title'] }}<br/>
+          </td>
+          <td>
+            {% for tag in bookmark['tags'] %}
+                <a href="#" class="tags" value="{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
+            {% endfor %}
+          </td>
+          <td>
+            {% if len(bookmark['hostname']) > 17 %}
+              <span title="{{ bookmark['hostname'] }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ bookmark['hostname'][0:7] }}...{{ bookmark['hostname'][15:] }}</span>
+            {% else %}
+              {{ bookmark['hostname'] }}
+            {% endif %}
+          </td>
+          <td nowrap="nowrap">
+            <a href="/bookmarks/delete?id={{ bookmark['_id'] }}" class="delete_bookmark"><span class="glyphicon glyphicon-trash"></span></a>
+            <a href="{{ bookmark['short_url'] }}" target="_blank"><span class="glyphicon glyphicon-expand"></span></a>
+          </td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+</div>

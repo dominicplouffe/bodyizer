@@ -33,7 +33,6 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                 'favicon.ico')
 
-
 @app.route('/')
 def home_page_view():
     return render_template(

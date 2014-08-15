@@ -1,0 +1,31 @@
+<div id="wrapper">
+  <div id="columns">
+    {% for bookmark in bookmarks %}
+    <div class="pin">
+      <p><a href="{{ bookmark['short_url'] }}" target="_blank">{{ bookmark['title'] }}</a></p>
+      <a href="{{ bookmark['short_url'] }}" target="_blank">
+        <img src="{{ bookmark.get('image', '/static/img/icon.png') }}" class="pin_image" />
+      </a>
+      <p class="below_image">
+        <strong>
+        {% if len(bookmark['hostname']) > 20 %}
+          <span title="{{ bookmark['hostname'] }}" class="hostnames" data-toggle="tooltip" data-placement="bottom">{{ bookmark['hostname'][0:10] }}...{{ bookmark['hostname'][20:] }}</span>
+        {% else %}
+          {{ bookmark['hostname'] }}
+        {% endif %}
+      </strong>
+      </p>
+      <p class="below_image">
+        {% for tag in bookmark['tags'] %}
+            <a href="#" class="tags" value="{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
+        {% endfor %}
+      </p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% block js %}
+
+
+{% endblock %}
