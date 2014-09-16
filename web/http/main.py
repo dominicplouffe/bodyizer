@@ -3,8 +3,7 @@ from services import bookmark as bm
 import sys
 import os
 
-import auth
-import bookmark
+from web.http import auth, bookmark
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.register_blueprint(auth.auth, url_prefix='/auth')

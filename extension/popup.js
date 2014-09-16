@@ -20,6 +20,7 @@ chrome.storage.local.get('api_url', function(obj) {
     chrome.runtime.sendMessage(
         {'action': 'popup_ready'},
         function(request, sender, sendResponse) {
+
             page_details = request.result;
 
             if (page_details.image === '') {
@@ -37,6 +38,19 @@ chrome.storage.local.get('api_url', function(obj) {
             };
 
             check_login_status();
+            // chrome.runtime.sendMessage(
+            //     {'action': 'take_screenshot'},
+            //     function(request) {}
+            // );
+
+            // setTimeout(function(){
+            //     chrome.runtime.sendMessage(
+            //         {'action': 'get_screenshot'},
+            //         function(request) {
+            //             $('#img_source_image').attr('src', request.result);
+            //         }
+            //     );
+            // }, 3000);
         }
     );
 });

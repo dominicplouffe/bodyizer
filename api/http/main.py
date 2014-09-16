@@ -1,8 +1,7 @@
 from flask import Flask
 import sys
 
-import auth
-import bookmark
+from api.http import auth, bookmark
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.register_blueprint(auth.auth, url_prefix='/api/v1.0/auth')

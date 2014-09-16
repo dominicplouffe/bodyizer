@@ -1,10 +1,10 @@
   {
     "manifest_version": 2,
-    "name": "bodyizer",
+    "name": "Connexion.me",
     "version": "0.0.1",
     "author": "http://www.dplouffe.ca",
 
-    "description": "Tool to get the content of the HTML",
+    "description": "Tool to bookmart the internet",
     "icons": {
         "16": "icon.png",
         "48": "icon.png",
@@ -37,8 +37,4 @@
         ],
         "run_at": "document_end"
     }]
-    // ,
-    // "chrome_url_overrides" : {
-    //     "newtab": "test.html"
-    // }
 }

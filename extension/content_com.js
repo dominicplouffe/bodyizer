@@ -13,6 +13,8 @@ function send_page_details() {
         return_object.title = return_object.title.trim();
     }
 
+    console.log(discovery());
+
     port.postMessage({'action': 'send_info', 'result': return_object});
 }
 

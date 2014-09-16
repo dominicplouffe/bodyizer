@@ -3,12 +3,25 @@ var active_url = null;
 var ports = {};
 var _token = null;
 var _api_url = null;
+var _images = {};
 
 var ports = {};
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action == 'popup_ready') {
-        sendResponse({'action': 'popup_details', 'result': details[active_url]});
+        res = details[active_url];
+        sendResponse({'action': 'popup_details', 'result': res});
+
+
+
+    } else if (request.action == 'take_screenshot') {
+
+        take_screenshot(sendResponse);
+
+    } else if (request.action == 'get_screenshot') {
+
+        sendResponse({'action': 'screenshot_result', 'result': _images[active_url]});
+
     } else if (request.action == 'set_storage') {
         _token = request.result.token;
         _api_url = request.result.api_url;
@@ -34,6 +47,10 @@ chrome.extension.onConnect.addListener(function(port) {
         } else if (request.action == 'send_info') {
             console.log('action => send_info');
             result = request.result;
+
+            if (_images[result.url] !== undefined) {
+                result.image = _images[result.url];
+            }
             details[result.url] = result;
         }
     });
@@ -54,8 +71,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
 chrome.tabs.onActivated.addListener(function(tab) {
     chrome.tabs.get(tab.tabId, function(tab) {
-        url = tab.url;
-        active_url = url;
+        if (tab !== undefined) {
+            url = tab.url;
+            active_url = url;
+        }
     });
 });
 
@@ -72,3 +91,19 @@ chrome.storage.local.get('api_url', function(obj) {
         _api_url = obj.api_url;
     }
 });
+
+
+function take_screenshot(sendResponse) {
+    console.log('take screenshot');
+
+    chrome.tabs.captureVisibleTab(
+        null,
+        {format: 'png', quality: 100},
+        function(dataURI) {
+            if (dataURI !== undefined) {
+                _images[active_url] = dataURI;
+                // sendResponse({'action': 'screenshot_taken', 'result': _images[active_url]});
+            }
+        }
+    );
+}
